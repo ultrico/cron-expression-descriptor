@@ -322,6 +322,12 @@ namespace CronExpressionDescriptor.Test
         }
 
         [Test]
+        public void TestDayOfWeekModifierForAllDaysOfWeek()
+        {
+            Assert.AreEqual("At 12:23 PM, on the second week of the month", ExpressionDescriptor.GetDescription("23 12 * * *#2"));
+        }
+
+        [Test]
         public void TestHourRangeWithEveryPortion()
         {
             Assert.AreEqual("At 25 minutes past the hour, every 13 hours, between 07:00 AM and 07:59 PM", ExpressionDescriptor.GetDescription("0 25 7-19/13 ? * *"));

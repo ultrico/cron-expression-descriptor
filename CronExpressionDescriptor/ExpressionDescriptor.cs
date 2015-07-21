@@ -291,7 +291,9 @@ namespace CronExpressionDescriptor
                   else if (s.Contains("L"))
                   {
                       exp = exp.Replace("L", string.Empty);
-                  }
+                  } 
+                  if (exp == "*")
+                      return CronExpressionDescriptor.Resources.Week;
 
                   return m_culture.DateTimeFormat.GetDayName(((DayOfWeek)Convert.ToInt32(exp)));
               }),
