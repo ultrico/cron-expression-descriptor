@@ -352,8 +352,8 @@ namespace CronExpressionDescriptor
         {
             string description = GetSegmentDescription(m_expressionParts[4],
                 string.Empty,
-               (s => s == "*" ? CronExpressionDescriptor.Resources.Every : 
-                   new DateTime(DateTime.Now.Year, Convert.ToInt32(s), 1).ToString("MMMM")),
+               (s => s == "*" ? CronExpressionDescriptor.Resources.Every :
+                   new DateTime(DateTime.Now.Year, Convert.ToInt32(s), 1).ToString("MMMM", m_culture)),
                (s => string.Format(CronExpressionDescriptor.Resources.ComaEveryX0Months, s)),
                (s => CronExpressionDescriptor.Resources.ComaX0ThroughX1),
                (s => CronExpressionDescriptor.Resources.ComaOnlyInX0));
