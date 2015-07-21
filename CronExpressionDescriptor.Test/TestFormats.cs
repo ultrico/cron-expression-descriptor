@@ -346,9 +346,9 @@ namespace CronExpressionDescriptor.Test
         }
 
         [Test]
-        public void TestsEvery3DayOfTheWeek()
+        public void TestsEvery3Week()
         {
-            Assert.AreEqual("At 10:15 AM, every 3 days of the week", ExpressionDescriptor.GetDescription("0 15 10 ? * */3"));
+            Assert.AreEqual("At 10:15 AM, every 3 week", ExpressionDescriptor.GetDescription("0 15 10 ? * */3"));
         }
 
         [Test]

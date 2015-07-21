@@ -169,7 +169,7 @@ namespace CronExpressionDescriptor {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to , every {0} days of the week.
+        ///   Looks up a localized string similar to , every {0} {{0}}.
         /// </summary>
         internal static string ComaEveryX0DaysOfTheWeek {
             get {
@@ -273,6 +273,15 @@ namespace CronExpressionDescriptor {
         internal static string ComaX0ThroughX1 {
             get {
                 return ResourceManager.GetString("ComaX0ThroughX1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to every.
+        /// </summary>
+        internal static string Every {
+            get {
+                return ResourceManager.GetString("Every", resourceCulture);
             }
         }
         

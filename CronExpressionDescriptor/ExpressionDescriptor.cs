@@ -265,7 +265,7 @@ namespace CronExpressionDescriptor
             string expression = m_expressionParts[2];
             string description = GetSegmentDescription(expression,
                  CronExpressionDescriptor.Resources.EveryHour,
-               (s => FormatTime(s, "0")),
+               (s => s.Contains("-") ? FormatTime(s.Split('-')[0], "0") : FormatTime(s, "0")),
                (s => string.Format(CronExpressionDescriptor.Resources.EveryX0Hours, s.PadLeft(2, '0'))),
                (s => CronExpressionDescriptor.Resources.BetweenX0AndX1),
                (s => CronExpressionDescriptor.Resources.AtX0));
@@ -352,7 +352,8 @@ namespace CronExpressionDescriptor
         {
             string description = GetSegmentDescription(m_expressionParts[4],
                 string.Empty,
-               (s => new DateTime(DateTime.Now.Year, Convert.ToInt32(s), 1).ToString("MMMM")),
+               (s => s == "*" ? CronExpressionDescriptor.Resources.Every : 
+                   new DateTime(DateTime.Now.Year, Convert.ToInt32(s), 1).ToString("MMMM")),
                (s => string.Format(CronExpressionDescriptor.Resources.ComaEveryX0Months, s)),
                (s => CronExpressionDescriptor.Resources.ComaX0ThroughX1),
                (s => CronExpressionDescriptor.Resources.ComaOnlyInX0));
@@ -398,7 +399,7 @@ namespace CronExpressionDescriptor
                             CronExpressionDescriptor.Resources.ComaEveryDay,
                             (s => s),
                             (s => s == "1" ? CronExpressionDescriptor.Resources.ComaEveryDay :
-                                CronExpressionDescriptor.Resources.ComaEveryX0Days),
+                                string.Format(CronExpressionDescriptor.Resources.ComaEveryX0Days, s)),
                             (s => CronExpressionDescriptor.Resources.ComaBetweenDayX0AndX1OfTheMonth),
                             (s => CronExpressionDescriptor.Resources.ComaOnDayX0OfTheMonth));
                         break;
@@ -458,7 +459,7 @@ namespace CronExpressionDescriptor
             else if (expression.Contains("/"))
             {
                 string[] segments = expression.Split('/');
-                description = string.Format(getIntervalDescriptionFormat(segments[1]), getSingleItemDescription(segments[1]));
+                description = string.Format(getIntervalDescriptionFormat(segments[1]), getSingleItemDescription(segments[0]));
 
                 //interval contains 'between' piece (i.e. 2-59/3 )
                 if (segments[0].Contains("-"))

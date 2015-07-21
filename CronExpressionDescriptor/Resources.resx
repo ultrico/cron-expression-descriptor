@@ -189,7 +189,7 @@
     <comment>ComaEveryDay description</comment>
   </data>
   <data name="ComaEveryX0DaysOfTheWeek" xml:space="preserve">
-    <value>, every {0} days of the week</value>
+    <value>, every {0} {{0}}</value>
     <comment>EveryX0DaysOfTheWeek description</comment>
   </data>
   <data name="ComaX0ThroughX1" xml:space="preserve">
@@ -290,5 +290,8 @@
   </data>
   <data name="Week" xml:space="preserve">
     <value>week</value>
+  </data>
+  <data name="Every" xml:space="preserve">
+    <value>every</value>
   </data>
 </root>
