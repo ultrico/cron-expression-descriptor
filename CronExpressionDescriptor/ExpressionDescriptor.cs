@@ -291,7 +291,7 @@ namespace CronExpressionDescriptor
                   else if (s.Contains("L"))
                   {
                       exp = exp.Replace("L", string.Empty);
-                  } 
+                  }
                   if (exp == "*")
                       return CronExpressionDescriptor.Resources.Week;
 
@@ -459,7 +459,12 @@ namespace CronExpressionDescriptor
             else if (expression.Contains("/"))
             {
                 string[] segments = expression.Split('/');
-                description = string.Format(getIntervalDescriptionFormat(segments[1]), getSingleItemDescription(segments[0]));
+                string singleItemDescription;
+                if (segments[0].Contains(","))
+                    singleItemDescription = CommaSeparatedExpression(segments[0], getSingleItemDescription);
+                else
+                    singleItemDescription = getSingleItemDescription(segments[0]);
+                description = string.Format(getIntervalDescriptionFormat(segments[1]), singleItemDescription);
 
                 //interval contains 'between' piece (i.e. 2-59/3 )
                 if (segments[0].Contains("-"))
@@ -482,33 +487,41 @@ namespace CronExpressionDescriptor
             }
             else if (expression.Contains(","))
             {
-                string[] segments = expression.Split(',');
+                var descriptionContent = CommaSeparatedExpression(expression, getSingleItemDescription);
 
-                string descriptionContent = string.Empty;
-                for (int i = 0; i < segments.Length; i++)
-                {
-                    if (i > 0 && segments.Length > 2)
-                    {
-                        descriptionContent += ",";
-
-                        if (i < segments.Length - 1)
-                        {
-                            descriptionContent += " ";
-                        }
-                    }
-
-                    if (i > 0 && segments.Length > 1 && (i == segments.Length - 1 || segments.Length == 2))
-                    {
-                        descriptionContent += CronExpressionDescriptor.Resources.SpaceAndSpace;
-                    }
-
-                    descriptionContent += getSingleItemDescription(segments[i]);
-                }
-
-                description = string.Format(getDescriptionFormat(expression), descriptionContent);
+                return string.Format(getDescriptionFormat(expression), descriptionContent);
             }
 
             return description;
+        }
+
+        protected string CommaSeparatedExpression(string expression, 
+            Func<string, string> getSingleItemDescription)
+        {
+            string[] segments = expression.Split(',');
+
+            string descriptionContent = string.Empty;
+            for (int i = 0; i < segments.Length; i++)
+            {
+                if (i > 0 && segments.Length > 2)
+                {
+                    descriptionContent += ",";
+
+                    if (i < segments.Length - 1)
+                    {
+                        descriptionContent += " ";
+                    }
+                }
+
+                if (i > 0 && segments.Length > 1 && (i == segments.Length - 1 || segments.Length == 2))
+                {
+                    descriptionContent += CronExpressionDescriptor.Resources.SpaceAndSpace;
+                }
+
+                descriptionContent += getSingleItemDescription(segments[i]);
+            }
+
+            return descriptionContent;
         }
 
         /// <summary>

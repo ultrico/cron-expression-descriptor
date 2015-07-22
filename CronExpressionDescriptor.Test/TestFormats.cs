@@ -352,6 +352,12 @@ namespace CronExpressionDescriptor.Test
         }
 
         [Test]
+        public void TestsEvery2WeekOnMondayAndTuesday()
+        {
+            Assert.AreEqual("At 10:15 AM, every 2 Monday and Tuesday", ExpressionDescriptor.GetDescription("0 15 10 ? * 1,2/2"));
+        }
+
+        [Test]
         public void TestEvery3Month()
         {
             Assert.AreEqual("At 07:05 AM, on day 2 of the month, every 3 months", ExpressionDescriptor.GetDescription("0 5 7 2 1/3 ? *"));
