@@ -400,7 +400,8 @@ namespace CronExpressionDescriptor
                             (s => s),
                             (s => s == "1" ? CronExpressionDescriptor.Resources.ComaEveryDay :
                                 string.Format(CronExpressionDescriptor.Resources.ComaEveryX0Days, s)),
-                            (s => CronExpressionDescriptor.Resources.ComaBetweenDayX0AndX1OfTheMonth),
+                            (s => CronExpressionDescriptor.Resources.BetweenX0AndX1),
+                            (s => CronExpressionDescriptor.Resources.ComaOnDayX0OfTheMonth),
                             (s => CronExpressionDescriptor.Resources.ComaOnDayX0OfTheMonth));
                         break;
                     }
@@ -440,7 +441,8 @@ namespace CronExpressionDescriptor
             Func<string, string> getSingleItemDescription,
             Func<string, string> getIntervalDescriptionFormat,
             Func<string, string> getBetweenDescriptionFormat,
-            Func<string, string> getDescriptionFormat)
+            Func<string, string> getDescriptionFormat,
+            Func<string, string> getDescriptionRanegFormat = null)
         {
             string description = null;
 
@@ -461,7 +463,7 @@ namespace CronExpressionDescriptor
                 string[] segments = expression.Split('/');
                 string singleItemDescription;
                 if (segments[0].Contains(","))
-                    singleItemDescription = CommaSeparatedExpression(segments[0], getSingleItemDescription);
+                    singleItemDescription = CommaSeparatedExpression(segments[0], getSingleItemDescription, getBetweenDescriptionFormat);
                 else
                     singleItemDescription = getSingleItemDescription(segments[0]);
                 description = string.Format(getIntervalDescriptionFormat(segments[1]), singleItemDescription);
@@ -477,26 +479,37 @@ namespace CronExpressionDescriptor
                     description += ", " + string.Format(getBetweenDescriptionFormat(betweenSegmentOfInterval), betweenSegment1Description, betweenSegment2Description);
                 }
             }
-            else if (expression.Contains("-"))
-            {
-                string[] segments = expression.Split('-');
-                string betweenSegment1Description = getSingleItemDescription(segments[0]);
-                string betweenSegment2Description = getSingleItemDescription(segments[1]);
-                betweenSegment2Description = betweenSegment2Description.Replace(":00", ":59");
-                description = string.Format(getBetweenDescriptionFormat(expression), betweenSegment1Description, betweenSegment2Description);
-            }
             else if (expression.Contains(","))
             {
-                var descriptionContent = CommaSeparatedExpression(expression, getSingleItemDescription);
+                var descriptionContent = CommaSeparatedExpression(expression, getSingleItemDescription, getBetweenDescriptionFormat);
 
                 return string.Format(getDescriptionFormat(expression), descriptionContent);
+            }
+            else if (expression.Contains("-"))
+            {
+                if (getDescriptionRanegFormat != null)
+                    description = string.Format(getDescriptionRanegFormat(expression), RangeExpression(expression, getSingleItemDescription, getBetweenDescriptionFormat));
+                else
+                    description = RangeExpression(expression, getSingleItemDescription, getBetweenDescriptionFormat);
             }
 
             return description;
         }
 
-        protected string CommaSeparatedExpression(string expression, 
-            Func<string, string> getSingleItemDescription)
+        protected string RangeExpression(string expression,
+            Func<string, string> getSingleItemDescription,
+            Func<string, string> getBetweenDescriptionFormat)
+        {
+            string[] segments = expression.Split('-');
+            string betweenSegment1Description = getSingleItemDescription(segments[0]);
+            string betweenSegment2Description = getSingleItemDescription(segments[1]);
+            betweenSegment2Description = betweenSegment2Description.Replace(":00", ":59");
+            return string.Format(getBetweenDescriptionFormat(expression), betweenSegment1Description, betweenSegment2Description);
+        }
+
+        protected string CommaSeparatedExpression(string expression,
+            Func<string, string> getSingleItemDescription,
+            Func<string, string> getBetweenDescriptionFormat)
         {
             string[] segments = expression.Split(',');
 
@@ -512,13 +525,19 @@ namespace CronExpressionDescriptor
                         descriptionContent += " ";
                     }
                 }
-
                 if (i > 0 && segments.Length > 1 && (i == segments.Length - 1 || segments.Length == 2))
                 {
                     descriptionContent += CronExpressionDescriptor.Resources.SpaceAndSpace;
                 }
-
-                descriptionContent += getSingleItemDescription(segments[i]);
+                if (segments[i].Contains("-"))
+                {
+                    descriptionContent += RangeExpression(segments[i], getSingleItemDescription,
+                        getBetweenDescriptionFormat);
+                }
+                else
+                {
+                    descriptionContent += getSingleItemDescription(segments[i]);
+                }
             }
 
             return descriptionContent;
@@ -633,8 +652,4 @@ namespace CronExpressionDescriptor
         }
         #endregion
     }
-
-
-
-
 }

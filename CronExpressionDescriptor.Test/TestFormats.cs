@@ -18,7 +18,7 @@ namespace CronExpressionDescriptor.Test
         [Test]
         public void TestEveryMinute()
         {
-           Assert.AreEqual("Every minute", ExpressionDescriptor.GetDescription("* * * * *"));
+            Assert.AreEqual("Every minute", ExpressionDescriptor.GetDescription("* * * * *"));
         }
 
         [Test]
@@ -255,7 +255,7 @@ namespace CronExpressionDescriptor.Test
         [Test]
         public void TestBetweenWithInterval()
         {
-            Assert.AreEqual("Every 03 minutes, minutes 02 through 59 past the hour, at 01:00 AM, 09:00 AM, and 10:00 PM, between day 11 and 26 of the month, January through June", ExpressionDescriptor.GetDescription("2-59/3 1,9,22 11-26 1-6 ?"));
+            Assert.AreEqual("Every 03 minutes, minutes 02 through 59 past the hour, at 01:00 AM, 09:00 AM, and 10:00 PM, on day between 11 and 26 of the month, January through June", ExpressionDescriptor.GetDescription("2-59/3 1,9,22 11-26 1-6 ?"));
         }
 
         [Test]
@@ -275,7 +275,7 @@ namespace CronExpressionDescriptor.Test
         {
             Assert.AreEqual("Every second, only in 2013", ExpressionDescriptor.GetDescription("* * * * * * 2013"));
         }
-        
+
         [Test]
         public void TestOneYearOnlyWithoutSeconds()
         {
@@ -372,13 +372,19 @@ namespace CronExpressionDescriptor.Test
         [Test]
         public void TestMutiPartRangeSeconds()
         {
-            Assert.AreEqual("Minutes 2,4 through 05 past the hour, at 01:00 AM", ExpressionDescriptor.GetDescription("2,4-5 1 * * *"));
+            Assert.AreEqual("At 02 and minutes 04 through 05 past the hour minutes past the hour, at 01:00 AM", ExpressionDescriptor.GetDescription("2,4-5 1 * * *"));
         }
 
         [Test]
         public void TestMutiPartRangeSeconds2()
         {
-            Assert.AreEqual("Minutes 2,26 through 28 past the hour, at 06:00 PM", ExpressionDescriptor.GetDescription("2,26-28 18 * * *"));
+            Assert.AreEqual("At 02 and minutes 26 through 28 past the hour minutes past the hour, at 06:00 PM", ExpressionDescriptor.GetDescription("2,26-28 18 * * *"));
+        }
+
+        [Test]
+        public void TestDaysOfMonthMultipleRanges()
+        {
+            Assert.AreEqual("At 12:23 PM, on day between 1 and 3, between 27 and 30, and 16 of the month", ExpressionDescriptor.GetDescription("23 12 1-3,27-30,16 * *"));
         }
     }
 }
